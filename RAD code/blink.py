@@ -1,12 +1,15 @@
-import RPI.GPIO as Prog1
+import RPi.GPIO as gpio
 import time
 
-Prog1.setmode (Prog1.BOARD)
-Prog1.setup (7, Prog1.OUT)
-for if in range (0, 100000):
-    Prog1.output (7, True)
-    time.sleep (1)
-    Prog1.output (7, False)
-    time.sleep (1)
-Prog1.cleanup ()
-    
+gpio.setmode (gpio.BCM)
+gpio.setup (4, gpio.OUT)
+
+for i in range (0, 10000):
+
+    gpio.output(4, True)
+    time.sleep(2)
+    gpio.output(4, False)
+    time.sleep(2)
+gpio.cleanup()
+
+
