@@ -15,7 +15,7 @@ while True:
     if result.is_valid():
         print("Last valid input: " + str(datetime.datetime.now()))
         print("Temperature: %d C" % result.temperature)
-        print("Temperature: %d F" % result.temperature((9/5)*32))
+        print("Temperature: %d F" % ((result.temperature + (9/5) * 32)))
         print("Humidity: %d %%" % result.humidity)
 
-    time.sleep(1)
+    time.sleep(5)

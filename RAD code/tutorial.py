@@ -204,4 +204,5 @@ NameError: name 'tup' is not defined
 3
 4
 5
->>> 
+>>>
+                
