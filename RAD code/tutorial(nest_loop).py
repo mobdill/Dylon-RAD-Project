@@ -11,3 +11,4 @@ for i in range(2,100):
         print(str(i) + " is a prime number.")
     else:
         counter = 0
+        
