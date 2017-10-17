@@ -1,0 +1,4 @@
+Was able to figure out ssh problem with the pi by simply changing some interface settings on the pi through the desktop. 
+This will hopefully allow me to post to Github a lot more easily. 
+
+I also figured out how to connect the camera/occupancy sensor to the data base and am working on sending points to the database.
