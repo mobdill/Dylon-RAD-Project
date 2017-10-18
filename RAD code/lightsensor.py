@@ -12,6 +12,7 @@ time.sleep(1)
 DEBUG = 1
 GPIO.setmode(GPIO.BCM)
 timestamp = datetime.datetime.now()
+
 def RCtime (RCpin):
         reading = 0
         GPIO.setup(RCpin, GPIO.OUT)
