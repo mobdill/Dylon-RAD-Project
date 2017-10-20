@@ -29,6 +29,7 @@ def RCtime (RCpin):
                 status = "off"
 
         return status
+        print status
 while True:
         #print RCtime(4)
         db.makerspace.insert(
