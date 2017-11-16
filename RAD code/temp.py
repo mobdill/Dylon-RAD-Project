@@ -2,6 +2,7 @@ import RPi.GPIO as GPIO
 import dht11
 import time
 import datetime
+from pymongo import MongoClient
 
 client = MongoClient("mongodb://dylonhill18:hillsrock101@testcluster-shard-00-00-odrn0.mongodb.net:27017,testcluster-shard-00-01-odrn0.mongodb.net:27017,testcluster-shard-00-02-odrn0.mongodb.net:27017/test?ssl=true&replicaSet=testcluster-shard-0&authSource=admin")
 db = client.testing
@@ -22,19 +23,9 @@ while True:
     if result.is_valid():
         print("Last valid input: " + str(datetime.datetime.now()))
         print("Temperature: %d C" % result.temperature)
-        print("Temperature: %d F" % ((result.temperature + (9/5) * 32)))
+        print("Temperature: %d F" % ((result.temperature * (9/5) + 32)))
         print("Humidity: %d %%" % result.humidity)
-
-    time.sleep(5)
-
-        db.makerspace.insert(
-                {"timestamp": timestamp,
-                "lightstatus": RCtime(4),
-                "identifier": 1
-                }
-                )
-        makerspacedata = db.makerspace.find(
-                {"identifier": 1
-                }
-                )
+        db.makerspace.insert({"timestamp": timestamp,"lightstatus": result,"identifier": 1})
+        makerspacedata = db.makerspace.find({"identifier": 1})
         print (makerspacedata)
+    time.sleep(5)

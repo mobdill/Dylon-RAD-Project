@@ -2,20 +2,25 @@ import StringIO
 import subprocess
 import os
 import time
+import dht11
 import datetime
 from PIL import Image
 from pymongo import MongoClient
 import RPi.GPIO as GPIO
 
 
-client = MongoClient("mongodb://dylonhill18:hillsrock101@testcluster-shard-00-0$
+client = MongoClient("mongodb://dylonhill18:hillsrock101@testcluster-shard-00-00-odrn0.mongodb.net:27017,testcluster-shard-00-01-odrn0.mongodb.net:27017,testcluster-shard-00-02-odrn0.mongodb.net:27017/test?ssl=true&replicaSet=testcluster-shard-0&authSource=admin")
 db = client.testing
 client.drop_database("testing")
 time.sleep(1)
-timestamp = datetime.datetime.now()
 
 DEBUG = 1
+GPIO.cleanup()
+GPIO.setwarings(False)
 GPIO.setmode(GPIO.BCM)
+timestamp = datetime.datetime.now()
+
+instance = dht11.DHT11(pin=17)
 
 threshold = 75
 sensitivity = 200
@@ -40,7 +45,7 @@ debugMode = False # False or True
 
 # Capture a small test image (for motion detection)
 def captureTestImage(settings, width, height):
-    command = "raspistill %s -w %s -h %s -t 200 -e bmp -n -o -" % (settings, width, height)
+    command = "raspistill %s -w %s -h %s -t 200 -e bmp -n -o -" % (settings, wi$
     imageData = StringIO.StringIO()
     imageData.write(subprocess.check_output(command, shell=True))
     imageData.seek(0)
@@ -66,14 +71,19 @@ def RCtime (RCpin):
     while (GPIO.input(RCpin) == GPIO.LOW):
         reading += 1
     if reading < 5000:
-        light = "on"
+        lightstatus = "on"
     else:
-        light = "off"
-    if status == 0 and light == "on":
-        print ("turn lights off")
-while (True):
+        lightstatus = "off"
+    return lightstatus
+    print lightstatus
+while True:
+    result = instance.read()
+    if result.is_valid():
+        print("Last valid input: " + str(datetime.datetime.now()))
+        print("Temperature: %d C" % result.temperature)
+        print("Humidity: %d %%" % result.humidity)
+        print("Temperature: %d F" % ((result.temperature * (9/5) + 32)))
 
-    # Get comparison image
     image2, buffer2 = captureTestImage(cameraSettings, testWidth, testHeight)
 
     # Count changed pixels
@@ -89,7 +99,7 @@ while (True):
             for y in xrange(testBorders[z][1][0]-1, testBorders[z][1][1]):   # $
                 if (debugMode):
                     debugim[x,y] = buffer2[x,y]
-                    if ((x == testBorders[z][0][0]-1) or (x == testBorders[z][0$
+                    if ((x == testBorders[z][0][0]-1) or (x == testBorders[z][0][1]-1) or (y == testBorders[z][1][0]-1) or (y == testBorders[z][1][1]-1)):
                         # print "Border %s %s" % (x,y)
                         debugim[x,y] = (0, 0, 255) # in debug mode, mark all bo$
                 # Just check green channel as it's the highest quality channel
@@ -103,9 +113,9 @@ while (True):
                     takePicture = True # will shoot the photo later
                 if ((debugMode == False) and (changedPixels > sensitivity)):
                     break  # break the y loop
-        if forceCapture:
-        if time.time() - lastCapture > forceCaptureTime:
-            takePicture = True
+    if forceCapture:
+                if time.time() - lastCapture > forceCaptureTime:
+                   takePicture = True
 
     if takePicture:
         lastCapture = time.time()
@@ -116,17 +126,22 @@ while (True):
     buffer1 = buffer2
 
     if takePicture:
-        status = 1
+        occupancy = "Occupied"
     else:
-        status = 0
- db.makerspace.insert(
+        occupancy = "Unoccupied"
+    return occupancy
+    print occupancy
+
+db.makerspace.insert(
         {"timestamp": timestamp,
         "lightstatus": RCtime(4),
-        "occupancystatus": status,
+        "occupancystatus": occupancystatus,
+        "temperature": ((result.temperature * (9/5) + 32)),
+        "humidity": result.humidity,
         "indentifier": 1
         }
         )
-    makerspacedata = db.makerspace.find(
+makerspacedata = db.makerspace.find(
         {"indetifier": 1
         }
         )
