@@ -2,3 +2,5 @@ Was able to figure out ssh problem with the pi by simply changing some interface
 This will hopefully allow me to post to Github a lot more easily. 
 
 I also figured out how to connect the camera/occupancy sensor to the data base and am working on sending points to the database.
+May need some assistance next week with the temperature sensor.
+i suggest us coming up with some code from scratch.
