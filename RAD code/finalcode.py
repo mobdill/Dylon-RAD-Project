@@ -1,4 +1,7 @@
-import StringIO
+Python 3.5.3 (default, Jan 19 2017, 14:11:04) 
+[GCC 6.3.0 20170124] on linux
+Type "copyright", "credits" or "license()" for more information.
+>>> mport StringIO
 import subprocess
 import os
 import time
@@ -9,6 +12,7 @@ from pymongo import MongoClient
 import RPi.GPIO as GPIO
 
 client = MongoClient("mongodb://abhijani123:Beastmode17@cluster0-shard-00-00-8t9ca.mongodb.net:27017,cluster0-shard-00-01-8t9ca.mongodb.net:27017,cluster0-shard-00-02-8t9ca.mongodb.net:27017/RAD?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin")
+
 db = client.testing
 time.sleep(1)
 
@@ -93,7 +97,7 @@ while (True):
             for y in xrange(testBorders[z][1][0]-1, testBorders[z][1][1]):   # $
                 if (debugMode):
                     debugim[x,y] = buffer2[x,y]
-		    if ((x == testBorders[z][0][0]-1) or (x == testBorders[z][0][1]-1) or (y == testBorders[z][1][0]-1) or (y == testBorders[z][1][1]-1)):
+                    if ((x == testBorders[z][0][0]-1) or (x == testBorders[z][0][1]-1) or (y == testBorders[z][1][0]-1) or (y == testBorders[z][1][1]-1)):
                         # print "Border %s %s" % (x,y)
                         debugim[x,y] = (0, 0, 255) # in debug mode, mark all bo$
                 # Just check green channel as it's the highest quality channel
@@ -108,16 +112,16 @@ while (True):
                 if ((debugMode == False) and (changedPixels > sensitivity)):
                     break  # break the y loop
         if forceCapture:
-	        if time.time() - lastCapture > forceCaptureTime:
-        	    takePicture = True
+                if time.time() - lastCapture > forceCaptureTime:
+                    takePicture = True
 
-    	if takePicture:
+        if takePicture:
             lastCapture = time.time()
        # saveImage(cameraSettings, saveWidth, saveHeight, saveQuality, diskSpac$
 
     # Swap comparison buffers
-	image1 = image2
-	buffer1 = buffer2
+        image1 = image2
+        buffer1 = buffer2
 
     if takePicture:
         occupancystatus = "Occupied"
@@ -134,5 +138,6 @@ while (True):
         print("Temperature: %d F" % ((result.temperature * 9/5) + 32))
 
         db.makerspace.insert({"timestamp": timestamp,"lightstatus": RCtime(4),"occupancystatus": occupancystatus,"temperature": ((result.temperature * 9/5) + 32),"humidity": result.humidity,"indentifier": 1})
-	makerspacedata = db.makerspace.find ({"indetifier": 1})
-   	print (makerspacedata)
+        makerspacedata = db.makerspace.find ({"indetifier": 1})
+        print (makerspacedata)
+
